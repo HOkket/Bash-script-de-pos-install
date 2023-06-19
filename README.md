@@ -1,0 +1,1 @@
+# Bash-script-de-pos-install
