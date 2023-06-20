@@ -47,6 +47,7 @@ if [ "$SISTEMA" = "1" ]; then
         read -r "POPSHELL"
         if [ "$POPSHELL" = "s" ]; then
             yay install gnome-shell-extension-pop-shell
+            yay install gnome-shell-extension-gamemode-git
         fi
     fi
 
