@@ -1,1 +1,1 @@
-# Bash-script-de-pos-install
+Script de configuração do Arch linux e seus derivados.
