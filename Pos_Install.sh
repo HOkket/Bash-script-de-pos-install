@@ -3,15 +3,25 @@
 ###Scrip de pos-instalação do Arch Linux e seus derivados.
 ###Autor: Mateus A.M Ferreira
 
-echo "Este e um scipt de pos instação para sistemas linux baseados em Ubuntu e Arch, selecione a base do seus sistema"
-echo "{1} - ARCH LINUX"
-echo "{2} - UBUNTU"
-read -r "Digite o numero correspondente ao seu sistema base!" SISTEMA
+# Usage: bannerSimple "my title" "*"
+function bannerSimple() {
+    local msg="${2} ${1} ${2}"
+    local edge
+    edge=${msg//?/$2}
+    echo "${edge}"
+    echo "$(tput bold)${msg}$(tput sgr0)"
+    echo "${edge}"
+    echo
+}
+# Usage: bannerSimple "my title" "*"
+bannerSimple "Este e um scipt de pos instação para sistemas linux baseados em Ubuntu e Arch" "*"
+bannerSimple "{1} - ARCH LINUX" "*"
+bannerSimple "{2} - UBUNTU" "*"
+read -p "Digite o numero correspondente ao seu sistema base! " SISTEMA
 
 if [ "$SISTEMA" = "1" ]; then
-    echo "Bem vindo" "$USER" "ao scrip de pos instalação do arch!"
     echo "Observe que antes de iniciarmos esta instalação o repositório multilib deve ser habilitado no arquivo pacman.conf"
-    read -r "Deseja modificar automaticamente o arquivo pacman.conf agora?[s/n]" multilib
+    read -p "Deseja modificar automaticamente o arquivo pacman.conf agora?[s/n]" multilib
 
     ###Estrutura de verificação para a abertura do pacman.conf
     if [ "$multilib" = "s" ] || [ "$multilib" = "S" ]; then
@@ -25,8 +35,8 @@ if [ "$SISTEMA" = "1" ]; then
     sudo pacman -Syu
 
     ###opçoes do usuario.
-    read -r "Deseja instalar drivers de video da NVIDIA?[s/n]" NVIDIA
-    read -r "Deseja instalar o YAYHelper para gerenciamento do repositorio AUR?[s/n]" YAY
+    read -p "Deseja instalar drivers de video da NVIDIA?[s/n]" NVIDIA
+    read -p "Deseja instalar o YAYHelper para gerenciamento do repositorio AUR?[s/n]" YAY
 
     if [ "$NVIDIA" = "s" ] || [ "$NVIDIA" = "S" ]; then
         sudo pacman -S nvidia vulkan-icd-loader nvidia-utils vulkan-tools vulkan-validation-layers
@@ -43,7 +53,7 @@ if [ "$SISTEMA" = "1" ]; then
         cd ..
         rm -rf yay-git
 
-        read -r "Deseja instalar a extenção PoPOS shell?[s/n] (funciona somente para GNOME)" POPSHELL
+        read -p "Deseja instalar a extenção PoPOS shell?[s/n] (funciona somente para GNOME)" POPSHELL
         if [ "$POPSHELL" = "s" ]  || [ "$POPSHELL" = "S" ]; then
             yay -S gnome-shell-extension-pop-shell || echo "Falha!"
             clear
@@ -61,10 +71,10 @@ elif [ "$SISTEMA" = "2" ]; then
     clear
 
     ###opçoes do usuario.
-    read -r "Deseja instalar drivers de video da NVIDIA?[s/n]" NVIDIA
+    read -p "Deseja instalar drivers de video da NVIDIA?[s/n] " NVIDIA
 
     if [ "$NVIDIA" = "s" ] || [ "$NVIDIA" = "S" ]; then
-    echo "Dois PPAs serão adicionados ao sistema o da NVIDA e do MESA."
+    echo "Dois PPAs serão adicionados ao sistema o da NVIDA e do MESA. "
         sudo add-apt-repository ppa:graphics-drivers/ppa
         sudo add-apt-repository ppa:kisak/kisak-mesa
         sudo apt update && sudo apt upgrade
@@ -72,13 +82,13 @@ elif [ "$SISTEMA" = "2" ]; then
         clear
     fi
 
-        read -r "Deseja instalar a extenção PoPOS shell?[s/n] (funciona somente para GNOME)" POPSHELL
+        read -p "Deseja instalar a extenção PoPOS shell?[s/n] (funciona somente para GNOME). " POPSHELL
         if [ "$POPSHELL" = "s" ] || [ "$POPSHELL" = "S" ]; then
             sudo apt install git node-typescript make -y
             cd /home/"$USER"/Downloads || return
             git clone https://github.com/pop-os/shell.git
             cd shell || return
-            make local-install || echo ""
+            make local-install
             clear
         fi
         
