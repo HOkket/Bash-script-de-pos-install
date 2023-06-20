@@ -15,7 +15,7 @@ if [ "$SISTEMA" = "1" ]; then
     read -r multilib
 
     ###Estrutura de verificação para a abertura do pacman.conf
-    if [ "$multilib" = "s" ]; then
+    if [ "$multilib" = "s" ] || [ "$multilib" = "S" ]; then
         sudo sed -i.bkp 's/#\[multilib\]$/[multilib]\nInclude = \/etc\/pacman.d\/mirrorlist/' /etc/pacman.conf
     else
         echo "Sem o repositório multilib não é possível obter pacotes importantes para essa instalação."
@@ -31,12 +31,12 @@ if [ "$SISTEMA" = "1" ]; then
     echo "Deseja instalar o YAYHelper para gerenciamento do repositorio AUR?[s/n]"
     read -r YAY
 
-    if [ "$NVIDIA" = "s" ]; then
+    if [ "$NVIDIA" = "s" ] || [ "$NVIDIA" = "S" ]; then
         sudo pacman -S nvidia vulkan-icd-loader nvidia-utils vulkan-tools vulkan-validation-layers
         clear
     fi
 
-    if [ "$YAY" = "s" ]; then
+    if [ "$YAY" = "s" ] || [ "$YAY" = "S" ] ; then
         cd /home/"$USER"/Downloads cd ... || return
         sudo pacman -S git go
         git clone https://aur.archlinux.org/yay-git.git
@@ -48,7 +48,7 @@ if [ "$SISTEMA" = "1" ]; then
 
         echo "Deseja instalar a extenção PoPOS shell?[s/n] (funciona somente para GNOME)"
         read -r "POPSHELL"
-        if [ "$POPSHELL" = "s" ]; then
+        if [ "$POPSHELL" = "s" ]  || [ "$POPSHELL" = "S" ]; then
             yay -S gnome-shell-extension-pop-shell
             clear
         fi
@@ -67,7 +67,7 @@ elif [ "$SISTEMA" = "2" ]; then
     echo "Deseja instalar drivers de video da NVIDIA?[s/n]"
     read -r NVIDIA
 
-    if [ "$NVIDIA" = "s" ]; then
+    if [ "$NVIDIA" = "s" ] || [ "$NVIDIA" = "S" ]; then
     echo "Dois PPAs serão adicionados ao sistema o da NVIDA e do MESA."
         sudo add-apt-repository ppa:graphics-drivers/ppa
         sudo add-apt-repository ppa:kisak/kisak-mesa
@@ -78,7 +78,7 @@ elif [ "$SISTEMA" = "2" ]; then
 
         echo "Deseja instalar a extenção PoPOS shell?[s/n] (funciona somente para GNOME)"
         read -r "POPSHELL"
-        if [ "$POPSHELL" = "s" ]; then
+        if [ "$POPSHELL" = "s" ] || [ "$POPSHELL" = "S" ]; then
             sudo apt install git node-typescript make -y
             cd /home/"$USER"/Downloads cd ... || return
             git clone https://github.com/pop-os/shell.git
