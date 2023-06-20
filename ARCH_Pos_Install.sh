@@ -46,13 +46,13 @@ if [ "$SISTEMA" = "1" ]; then
         echo "Deseja instalar a extenção PoPOS shell?[s/n] (funciona somente para GNOME)"
         read -r "POPSHELL"
         if [ "$POPSHELL" = "s" ]; then
-            yay install gnome-shell-extension-pop-shell
-            yay install gnome-shell-extension-gamemode-git
+            yay -S gnome-shell-extension-pop-shell
         fi
     fi
 
     ### Instalação de pacotes referentes a games no linux.
     sudo pacman -S steam wine gamemode discord && yay -S lutris
+     gnome-shell-extension-gamemode-git
 elif [ "$SISTEMA" = "2" ]; then
 exit
 fi
