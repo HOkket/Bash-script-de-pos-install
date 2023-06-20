@@ -38,6 +38,11 @@ if [ "$YAY" = "s" ]; then
     makepkg -si
     cd ..
     rm -rf yay-git
+        echo "Deseja instalar a extenção PoPOS shell?[s/n] (funciona somente para GNOME)"
+        read -r "POPSHELL"
+            if [ "$POPSHELL" = "s" ]; then
+                yay install gnome-shell-extension-pop-shell
+            fi
 fi
 
  ### Instalação de pacotes referentes a games no linux.
