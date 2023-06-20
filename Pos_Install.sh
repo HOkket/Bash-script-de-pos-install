@@ -6,13 +6,12 @@
 echo "Este e um scipt de pos instação para sistemas linux baseados em Ubuntu e Arch, selecione a base do seus sistema"
 echo "{1} - ARCH LINUX"
 echo "{2} - UBUNTU"
-read -r SISTEMA
+read -r "Digite o numero correspondente ao seu sistema base!" SISTEMA
 
 if [ "$SISTEMA" = "1" ]; then
     echo "Bem vindo" "$USER" "ao scrip de pos instalação do arch!"
     echo "Observe que antes de iniciarmos esta instalação o repositório multilib deve ser habilitado no arquivo pacman.conf"
-    echo "Deseja abrir o arquivo pacman.conf agora?[s/n]"
-    read -r multilib
+    read -r "Deseja modificar automaticamente o arquivo pacman.conf agora?[s/n]" multilib
 
     ###Estrutura de verificação para a abertura do pacman.conf
     if [ "$multilib" = "s" ] || [ "$multilib" = "S" ]; then
@@ -26,10 +25,8 @@ if [ "$SISTEMA" = "1" ]; then
     sudo pacman -Syu
 
     ###opçoes do usuario.
-    echo "Deseja instalar drivers de video da NVIDIA?[s/n]"
-    read -r NVIDIA
-    echo "Deseja instalar o YAYHelper para gerenciamento do repositorio AUR?[s/n]"
-    read -r YAY
+    read -r "Deseja instalar drivers de video da NVIDIA?[s/n]" NVIDIA
+    read -r "Deseja instalar o YAYHelper para gerenciamento do repositorio AUR?[s/n]" YAY
 
     if [ "$NVIDIA" = "s" ] || [ "$NVIDIA" = "S" ]; then
         sudo pacman -S nvidia vulkan-icd-loader nvidia-utils vulkan-tools vulkan-validation-layers
@@ -37,17 +34,16 @@ if [ "$SISTEMA" = "1" ]; then
     fi
 
     if [ "$YAY" = "s" ] || [ "$YAY" = "S" ] ; then
-        cd /home/"$USER"/Downloads cd ... || return
+        cd /home/"$USER"/Downloads || return
         sudo pacman -S git go
         git clone https://aur.archlinux.org/yay-git.git
-        cd yay-git cd ... || return
+        cd yay-git || return
         makepkg -si
         clear
         cd ..
         rm -rf yay-git
 
-        echo "Deseja instalar a extenção PoPOS shell?[s/n] (funciona somente para GNOME)"
-        read -r "POPSHELL"
+        read -r "Deseja instalar a extenção PoPOS shell?[s/n] (funciona somente para GNOME)" POPSHELL
         if [ "$POPSHELL" = "s" ]  || [ "$POPSHELL" = "S" ]; then
             yay -S gnome-shell-extension-pop-shell
             clear
@@ -64,8 +60,7 @@ elif [ "$SISTEMA" = "2" ]; then
     clear
 
     ###opçoes do usuario.
-    echo "Deseja instalar drivers de video da NVIDIA?[s/n]"
-    read -r NVIDIA
+    read -r "Deseja instalar drivers de video da NVIDIA?[s/n]" NVIDIA
 
     if [ "$NVIDIA" = "s" ] || [ "$NVIDIA" = "S" ]; then
     echo "Dois PPAs serão adicionados ao sistema o da NVIDA e do MESA."
@@ -76,13 +71,12 @@ elif [ "$SISTEMA" = "2" ]; then
         clear
     fi
 
-        echo "Deseja instalar a extenção PoPOS shell?[s/n] (funciona somente para GNOME)"
-        read -r "POPSHELL"
+        read -r "Deseja instalar a extenção PoPOS shell?[s/n] (funciona somente para GNOME)" POPSHELL
         if [ "$POPSHELL" = "s" ] || [ "$POPSHELL" = "S" ]; then
             sudo apt install git node-typescript make -y
-            cd /home/"$USER"/Downloads cd ... || return
+            cd /home/"$USER"/Downloads || return
             git clone https://github.com/pop-os/shell.git
-            cd shell cd ... || return
+            cd shell || return
             make local-install
             clear
         fi
