@@ -1,1 +1,1 @@
-Script de configuração do Arch linux e seus derivados.
+**Script de instalação de drivers e alguns poucos app para Arch Linux e Ubuntu e seus derivados.**

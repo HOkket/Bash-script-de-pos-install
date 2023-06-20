@@ -3,6 +3,7 @@
 ###Scrip de pos-instalação do Arch Linux e seus derivados.
 ###Autor: Mateus A.M Ferreira
 
+clear
 # Usage: bannerSimple "my title" "*"
 function bannerSimple() {
     local msg="${2} ${1} ${2}"
@@ -67,7 +68,7 @@ if [ "$SISTEMA" = "1" ]; then
     fi
 
 elif [ "$SISTEMA" = "2" ]; then
-    sudo apt update && sudo apt upgrade
+    sudo apt update && sudo apt upgrade -y
     clear
 
     ###opçoes do usuario.
@@ -78,7 +79,7 @@ elif [ "$SISTEMA" = "2" ]; then
         sudo add-apt-repository ppa:graphics-drivers/ppa
         sudo add-apt-repository ppa:kisak/kisak-mesa
         sudo apt update && sudo apt upgrade
-        sudo apt install mesa-* vulkan-* nvidia-driver-530 nvidia-settings
+        sudo apt install mesa-* vulkan-* nvidia-driver-530 nvidia-settings -y
         clear
     fi
 
