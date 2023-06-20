@@ -4,8 +4,8 @@
 ###Autor: Mateus A.M Ferreira
 
 echo "Este e um scipt de pos instação para sistemas linux baseados em Ubuntu e Arch, selecione a base do seus sistema"
-echo "1 - ARCH"
-echo "2 - UBUNTU"
+echo "{1} - ARCH"
+echo "{2} - UBUNTU"
 read -r SISTEMA
 
 if [ "$SISTEMA" = "1" ]; then
@@ -43,6 +43,7 @@ if [ "$SISTEMA" = "1" ]; then
         makepkg -si
         cd ..
         rm -rf yay-git
+
         echo "Deseja instalar a extenção PoPOS shell?[s/n] (funciona somente para GNOME)"
         read -r "POPSHELL"
         if [ "$POPSHELL" = "s" ]; then
@@ -51,8 +52,8 @@ if [ "$SISTEMA" = "1" ]; then
     fi
 
     ### Instalação de pacotes referentes a games no linux.
-    sudo pacman -S steam wine gamemode discord && yay -S lutris
-     gnome-shell-extension-gamemode-git
+    sudo pacman -S steam wine gamemode discord && yay -S lutris gnome-shell-extension-gamemode-git
 elif [ "$SISTEMA" = "2" ]; then
-exit
+    sudo apt update
+    sudo apt upgrade
 fi
