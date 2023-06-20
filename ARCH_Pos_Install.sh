@@ -16,7 +16,6 @@ else
     exit
 fi
 
-
 ###Sincronização e atualização inicial dos pacotes.
 sudo pacman -Syu
 
@@ -27,7 +26,7 @@ echo "Deseja instalar o YAYHelper para gerenciamento do repositorio AUR?[s/n]"
 read -r YAY
 
 if [ "$NVIDIA" = "s" ]; then
-    sudo pacman -S nvidia nvidia-utils
+    sudo pacman -S nvidia vulkan-icd-loader nvidia-utils vulkan-tools vulkan-validation-layers
 fi
 
 if [ "$YAY" = "s" ]; then
