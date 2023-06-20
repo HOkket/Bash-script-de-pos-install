@@ -45,14 +45,15 @@ if [ "$SISTEMA" = "1" ]; then
 
         read -r "Deseja instalar a extenção PoPOS shell?[s/n] (funciona somente para GNOME)" POPSHELL
         if [ "$POPSHELL" = "s" ]  || [ "$POPSHELL" = "S" ]; then
-            yay -S gnome-shell-extension-pop-shell
+            yay -S gnome-shell-extension-pop-shell || echo "Falha!"
             clear
         fi
 
         
     ### Instalação de pacotes referentes a games no linux.
-    sudo pacman -S steam wine gamemode discord && yay -S lutris gnome-shell-extension-gamemode-git
+    sudo pacman -S steam wine gamemode discord neofetch && yay -S lutris gnome-shell-extension-gamemode-git 
     clear
+    neofetch
     fi
 
 elif [ "$SISTEMA" = "2" ]; then
@@ -77,11 +78,12 @@ elif [ "$SISTEMA" = "2" ]; then
             cd /home/"$USER"/Downloads || return
             git clone https://github.com/pop-os/shell.git
             cd shell || return
-            make local-install
+            make local-install || echo ""
             clear
         fi
         
     ### Instalação de pacotes referentes a games no linux.
-    sudo apt install steam gamemode discord lutris -y
+    sudo apt install steam gamemode discord lutris neofetch -y
     clear
+    neofetch
 fi
