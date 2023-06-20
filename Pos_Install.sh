@@ -4,7 +4,7 @@
 ###Autor: Mateus A.M Ferreira
 
 echo "Este e um scipt de pos instação para sistemas linux baseados em Ubuntu e Arch, selecione a base do seus sistema"
-echo "{1} - ARCH"
+echo "{1} - ARCH LINUX"
 echo "{2} - UBUNTU"
 read -r SISTEMA
 
@@ -33,14 +33,16 @@ if [ "$SISTEMA" = "1" ]; then
 
     if [ "$NVIDIA" = "s" ]; then
         sudo pacman -S nvidia vulkan-icd-loader nvidia-utils vulkan-tools vulkan-validation-layers
+        clear
     fi
 
     if [ "$YAY" = "s" ]; then
-        cd /home/"$USER"/Downloads cd ... || exit
+        cd /home/"$USER"/Downloads cd ... || return
         sudo pacman -S git go
         git clone https://aur.archlinux.org/yay-git.git
-        cd yay-git cd ... || exit
+        cd yay-git cd ... || return
         makepkg -si
+        clear
         cd ..
         rm -rf yay-git
 
@@ -48,12 +50,44 @@ if [ "$SISTEMA" = "1" ]; then
         read -r "POPSHELL"
         if [ "$POPSHELL" = "s" ]; then
             yay -S gnome-shell-extension-pop-shell
+            clear
         fi
-    fi
 
+        
     ### Instalação de pacotes referentes a games no linux.
     sudo pacman -S steam wine gamemode discord && yay -S lutris gnome-shell-extension-gamemode-git
+    clear
+    fi
+
 elif [ "$SISTEMA" = "2" ]; then
-    sudo apt update
-    sudo apt upgrade
+    sudo apt update && sudo apt upgrade
+    clear
+
+    ###opçoes do usuario.
+    echo "Deseja instalar drivers de video da NVIDIA?[s/n]"
+    read -r NVIDIA
+
+    if [ "$NVIDIA" = "s" ]; then
+    echo "Dois PPAs serão adicionados ao sistema o da NVIDA e do MESA."
+        sudo add-apt-repository ppa:graphics-drivers/ppa
+        sudo add-apt-repository ppa:kisak/kisak-mesa
+        sudo apt update && sudo apt upgrade
+        sudo apt install mesa-* vulkan-* nvidia-driver-530 nvidia-settings
+        clear
+    fi
+
+        echo "Deseja instalar a extenção PoPOS shell?[s/n] (funciona somente para GNOME)"
+        read -r "POPSHELL"
+        if [ "$POPSHELL" = "s" ]; then
+            sudo apt install git node-typescript make -y
+            cd /home/"$USER"/Downloads cd ... || return
+            git clone https://github.com/pop-os/shell.git
+            cd shell cd ... || return
+            make local-install
+            clear
+        fi
+        
+    ### Instalação de pacotes referentes a games no linux.
+    sudo apt install steam gamemode discord lutris -y
+    clear
 fi
