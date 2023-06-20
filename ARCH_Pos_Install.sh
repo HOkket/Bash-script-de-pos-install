@@ -36,10 +36,10 @@ if [ "$SISTEMA" = "1" ]; then
     fi
 
     if [ "$YAY" = "s" ]; then
-        cd /home/"$USER"/Downloads cd ... || exit
+        cd /home/"$USER"/Downloads cd ... || return
         sudo pacman -S git go
         git clone https://aur.archlinux.org/yay-git.git
-        cd yay-git cd ... || exit
+        cd yay-git cd ... || return
         makepkg -si
         cd ..
         rm -rf yay-git
