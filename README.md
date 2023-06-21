@@ -4,7 +4,7 @@ Este é um script de pós-instalação para sistemas Linux baseados em Ubuntu e 
 Uso
 
     Certifique-se de ter os privilégios de superusuário (sudo) para executar os comandos necessários. 
-    Execute o script usando o comando  bash nome_do_arquivo.sh no terminal.
+    Execute o script usando o comando  bash ./Pos_install.sh no terminal.
     Siga as instruções apresentadas pelo script. 
     Aguarde enquanto o script realiza as configurações e instalações necessárias. 
 
