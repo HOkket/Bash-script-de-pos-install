@@ -3,8 +3,7 @@ clear
 
 ###Scrip de pos-instalação do Arch Linux e seus derivados.
 
-# Usage: pacMan inputString interval pad
-# Example: pacman "Anime" 0.5 "*"
+###pacMan animação
 function pacMan () {
     local string="${1}"
     local interval="${2}"
@@ -112,11 +111,14 @@ elif [ "$SISTEMA" = "2" ]; then
     read -p "Deseja instalar drivers de video da NVIDIA?[s/n] " NVIDIA
 
     if [ "$NVIDIA" = "s" ] || [ "$NVIDIA" = "S" ]; then
+NVIDIAPPA="add-apt-repository ppa:graphics-drivers/ppa"
+MESAPPA="add-apt-repository ppa:kisak/kisak-mesa"
+PACOTES_NVIDIA_MESA="mesa-* vulkan-* nvidia-driver-530 nvidia-settings"
     echo "Dois PPAs serão adicionados ao sistema o da NVIDA e do MESA. "
-        sudo add-apt-repository ppa:graphics-drivers/ppa
-        sudo add-apt-repository ppa:kisak/kisak-mesa
+        sudo "$NVIDIAPPA"
+        sudo "$MESAPPA"
         sudo apt update && sudo apt upgrade
-        sudo apt install mesa-* vulkan-* nvidia-driver-530 nvidia-settings -y
+        sudo apt install "$PACOTES_NVIDIA_MESA" -y
         clear
     fi
 
@@ -129,9 +131,10 @@ elif [ "$SISTEMA" = "2" ]; then
             make local-install
             clear
         fi
-        
+
     ### Instalação de pacotes referentes a games no linux.
-    sudo apt install steam gamemode discord lutris neofetch -y
+    GAMEPACK="steam gamemode discord lutris neofetch"
+    sudo apt install "$GAMEPACK" -y
     clear
     neofetch
 fi
