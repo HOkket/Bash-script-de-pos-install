@@ -1,4 +1,4 @@
-Script de Pós-Instalação para Arch Linux e Derivados 
+Script de Pós-Instalação para Ubuntu e Arch Linux e Derivados 
 
 Este é um script de pós-instalação para sistemas Linux baseados em Ubuntu e Arch. Ele automatiza algumas tarefas comuns após a instalação do sistema operacional, como a configuração de repositórios, instalação de drivers de vídeo e pacotes adicionais.
 Uso
