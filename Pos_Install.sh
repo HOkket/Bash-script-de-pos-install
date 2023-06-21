@@ -37,7 +37,7 @@ function pacMan () {
 }
 
 # Usage: pacMan e creditos
-pacMan "    Crido por Mateus Ferreira   " 0.1 "."
+pacMan "    Criado por Mateus Ferreira   " 0.1 "."
 
 # bannerSimple "Baner" "*"
 function bannerSimple() {
@@ -75,7 +75,8 @@ if [ "$SISTEMA" = "1" ]; then
     read -p "Deseja instalar o YAYHelper para gerenciamento do repositorio AUR?[s/n]" YAY
 
     if [ "$NVIDIA" = "s" ] || [ "$NVIDIA" = "S" ]; then
-        sudo pacman -S nvidia vulkan-icd-loader nvidia-utils vulkan-tools vulkan-validation-layers
+        NVIDIAPACKS="nvidia vulkan-icd-loader nvidia-utils vulkan-tools vulkan-validation-layers"
+        sudo pacman -S "$NVIDIAPACKS"
         clear
     fi
 
@@ -95,10 +96,11 @@ if [ "$SISTEMA" = "1" ]; then
             clear
         fi
 
-        
     ### Instalação de pacotes referentes a games no linux.
-    sudo pacman -S steam wine gamemode discord neofetch && yay -S lutris gnome-shell-extension-gamemode-git 
-    clear
+    PACMAN="steam wine gamemode discord neofetch"
+    YAYAPPS="lutris gnome-shell-extension-gamemode-git"
+        sudo pacman -S "$PACMAN" && yay -S "$YAYAPPS" 
+        clear
     neofetch
     fi
 
