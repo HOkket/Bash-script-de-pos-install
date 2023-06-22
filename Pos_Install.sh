@@ -252,7 +252,6 @@ elif [ "$SISTEMA" = "UBUNTU" ]; then
     inputChoice "Selecione:" 0 "${options[@]}"
     choice=$?
     NVIDIA=${options[$choice]}
-
     if [ "$NVIDIA" = "SIM" ]; then
     # Dois PPAs serão adicionados ao sistema o da NVIDA e do MESA.
         NVIDIAPPA="add-apt-repository ppa:graphics-drivers/ppa"
@@ -265,13 +264,19 @@ elif [ "$SISTEMA" = "UBUNTU" ]; then
         clear
     fi
 
-    read -p "Deseja instalar a extenção PoPOS shell?[s/n] (funciona somente para GNOME). " POPSHELL
-    if [ "$POPSHELL" = "s" ] || [ "$POPSHELL" = "S" ]; then
+    echo "Deseja instalar a extenção PoPOS shell? (funciona somente para GNOME)."
+    options=("SIM" "NAO")
+    inputChoice "Selecione:" 0 "${options[@]}"
+    choice=$?
+    POPSHELL=${options[$choice]}
+    if [ "$POPSHELL" = "SIM" ]; then
         sudo apt install git node-typescript make -y
         cd /home/"$USER"/Downloads || return
         git clone https://github.com/pop-os/shell.git
         cd shell || return
         make local-install
+        cd ..
+        rm -rf shell/
         clear
     fi
 
