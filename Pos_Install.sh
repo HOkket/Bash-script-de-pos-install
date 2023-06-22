@@ -72,28 +72,32 @@ function inputChoice() {
 # Uso: multiChoice "mensagem de cabeçalho" resultArray "opções separadas por vírgula" "valores padrão separados por vírgula"
 # Creditos: https://serverfault.com/a/949806
 function multiChoice {
-    echo "${1}"; shift
+    echo "${1}"
+    shift
     echo "$(tput dim)""- Change Option: [up/down], Change Selection: [space], Done: [ENTER]" "$(tput sgr0)"
     # pequenos ajudantes para controle de impressão de terminal e entrada de tecla
-    ESC=$( printf "\033")
-    cursor_blink_on()   { printf "%s" "${ESC}[?25h"; }
-    cursor_blink_off()  { printf "%s" "${ESC}[?25l"; }
-    cursor_to()         { printf "%s" "${ESC}[$1;${2:-1}H"; }
-    print_inactive()    { printf "%s   %s " "$2" "$1"; }
-    print_active()      { printf "%s  ${ESC}[7m $1 ${ESC}[27m" "$2"; }
-    get_cursor_row()    { IFS=';' read -rsdR -p $'\E[6n' ROW COL; echo "${ROW#*[}"; }
-    key_input()         {
+    ESC=$(printf "\033")
+    cursor_blink_on() { printf "%s" "${ESC}[?25h"; }
+    cursor_blink_off() { printf "%s" "${ESC}[?25l"; }
+    cursor_to() { printf "%s" "${ESC}[$1;${2:-1}H"; }
+    print_inactive() { printf "%s   %s " "$2" "$1"; }
+    print_active() { printf "%s  ${ESC}[7m $1 ${ESC}[27m" "$2"; }
+    get_cursor_row() {
+        IFS=';' read -rsdR -p $'\E[6n' ROW COL
+        echo "${ROW#*[}"
+    }
+    key_input() {
         local key
         IFS= read -rsn1 key 2>/dev/null >&2
-        if [[ $key = ""      ]]; then echo enter; fi;
-        if [[ $key = $'\x20' ]]; then echo space; fi;
+        if [[ $key = "" ]]; then echo enter; fi
+        if [[ $key = $'\x20' ]]; then echo space; fi
         if [[ $key = $'\x1b' ]]; then
             read -rsn2 key
-            if [[ $key = [A ]]; then echo up;    fi;
-            if [[ $key = [B ]]; then echo down;  fi;
+            if [[ $key = [A ]]; then echo up; fi
+            if [[ $key = [B ]]; then echo down; fi
         fi
     }
-    toggle_option()    {
+    toggle_option() {
         local arr_name=$1
         eval "local arr=(\"\${${arr_name}[@]}\")"
         local option=$2
@@ -109,16 +113,16 @@ function multiChoice {
     local options
     local defaults
 
-    IFS=';' read -r -a options <<< "$2"
+    IFS=';' read -r -a options <<<"$2"
     if [[ -z $3 ]]; then
         defaults=()
     else
-        IFS=';' read -r -a defaults <<< "$3"
+        IFS=';' read -r -a defaults <<<"$3"
     fi
 
     local selected=()
 
-    for ((i=0; i<${#options[@]}; i++)); do
+    for ((i = 0; i < ${#options[@]}; i++)); do
         selected+=("${defaults[i]}")
         printf "\n"
     done
@@ -153,12 +157,16 @@ function multiChoice {
 
         # user key control
         case $(key_input) in
-            space)  toggle_option selected $active;;
-            enter)  break;;
-            up)     ((active--));
-                if [ $active -lt 0 ]; then active=$((${#options[@]} - 1)); fi;;
-            down)   ((active++));
-                if [ "$active" -ge ${#options[@]} ]; then active=0; fi;;
+        space) toggle_option selected $active ;;
+        enter) break ;;
+        up)
+            ((active--))
+            if [ $active -lt 0 ]; then active=$((${#options[@]} - 1)); fi
+            ;;
+        down)
+            ((active++))
+            if [ "$active" -ge ${#options[@]} ]; then active=0; fi
+            ;;
         esac
     done
 
@@ -168,7 +176,7 @@ function multiChoice {
     cursor_blink_on
 
     indices=()
-    for((i=0;i<${#selected[@]};i++)); do
+    for ((i = 0; i < ${#selected[@]}; i++)); do
         if ((selected[i] == 1)); then
             indices+=("${i}")
         fi
@@ -239,17 +247,21 @@ elif [ "$SISTEMA" = "UBUNTU" ]; then
     clear
 
     ###opçoes do usuario.
-    read -p "Deseja instalar drivers de video da NVIDIA?[s/n] " NVIDIA
+    echo 'Deseja instalar drivers de video da NVIDIA?'
+    options=("SIM" "NAO")
+    inputChoice "Selecione:" 0 "${options[@]}"
+    choice=$?
+    NVIDIA=${options[$choice]}
 
-    if [ "$NVIDIA" = "s" ] || [ "$NVIDIA" = "S" ]; then
+    if [ "$NVIDIA" = "SIM" ]; then
         NVIDIAPPA="add-apt-repository ppa:graphics-drivers/ppa"
         MESAPPA="add-apt-repository ppa:kisak/kisak-mesa"
-        PACOTES_NVIDIA_MESA="mesa-* vulkan-* nvidia-driver-530 nvidia-settings"
         echo "Dois PPAs serão adicionados ao sistema o da NVIDA e do MESA. "
         sudo "$NVIDIAPPA"
         sudo "$MESAPPA"
         sudo apt update && sudo apt upgrade
-        sudo apt install "$PACOTES_NVIDIA_MESA" -y
+        NVIDIADRIVER=$(ubuntu-drivers devices | grep recommended | awk '{print $3}')
+        sudo apt install "mesa-* vulkan-* "$NVIDIADRIVER" nvidia-settings" -y
         clear
     fi
 
