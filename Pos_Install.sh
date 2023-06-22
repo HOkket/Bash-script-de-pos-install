@@ -3,10 +3,10 @@ clear
 
 ###Scrip de pos-instalação do Arch Linux e seus derivados.
 
-# Usage: options=("one" "two" "three"); inputChoice "Choose:" 1 "${options[@]}"; choice=$?; echo "${options[$choice]}"
+# Uso: options=("um" "dois" "três"); inputChoice "Escolha:" 1 "${options[@]}"; choice=$?; echo "${options[$choice]}"
 function inputChoice() {
     echo "${1}"; shift
-    echo "$(tput dim)""- Change option: [up/down], Select: [ENTER]" "$(tput sgr0)"
+    echo "$(tput dim)""- Alternar opção: [cima/baixo], Selecionar: [ENTER]" "$(tput sgr0)"
     local selected="${1}"; shift
 
     ESC=$(echo -e "\033")
@@ -54,13 +54,13 @@ function inputChoice() {
     return "${selected}"
 }
 
-# Usage: options=("one" "two" "three"); inputChoice "Choose:" 1 "${options[@]}"; choice=$?; echo "${options[$choice]}"
+# Uso: options=("um" "dois" "três"); inputChoice "Escolha:" 1 "${options[@]}"; choice=$?; echo "${options[$choice]}"
 echo 'Este e um scipt de pos instação para sistemas linux baseados em Ubuntu e Arch'
 options=("ARCH LINUX" "UBUNTU" "SAIR")
 inputChoice "Choose:" 0 "${options[@]}"; choice=$?
 SISTEMA=${options[$choice]}
 
-if [ "$SISTEMA" = "1" ]; then
+if [ "$SISTEMA" = "ARCH LINUX" ]; then
     echo "Observe que antes de iniciarmos esta instalação o repositório multilib deve ser habilitado no arquivo pacman.conf"
     read -p "Deseja modificar automaticamente o arquivo pacman.conf agora?[s/n]" multilib
 
@@ -109,7 +109,7 @@ if [ "$SISTEMA" = "1" ]; then
     neofetch
     fi
 
-elif [ "$SISTEMA" = "2" ]; then
+elif [ "$SISTEMA" = "UBUNTU" ]; then
     sudo apt update && sudo apt upgrade -y
     clear
 
@@ -117,9 +117,9 @@ elif [ "$SISTEMA" = "2" ]; then
     read -p "Deseja instalar drivers de video da NVIDIA?[s/n] " NVIDIA
 
     if [ "$NVIDIA" = "s" ] || [ "$NVIDIA" = "S" ]; then
-NVIDIAPPA="add-apt-repository ppa:graphics-drivers/ppa"
-MESAPPA="add-apt-repository ppa:kisak/kisak-mesa"
-PACOTES_NVIDIA_MESA="mesa-* vulkan-* nvidia-driver-530 nvidia-settings"
+    NVIDIAPPA="add-apt-repository ppa:graphics-drivers/ppa"
+    MESAPPA="add-apt-repository ppa:kisak/kisak-mesa"
+    PACOTES_NVIDIA_MESA="mesa-* vulkan-* nvidia-driver-530 nvidia-settings"
     echo "Dois PPAs serão adicionados ao sistema o da NVIDA e do MESA. "
         sudo "$NVIDIAPPA"
         sudo "$MESAPPA"
