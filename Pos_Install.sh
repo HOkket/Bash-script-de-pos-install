@@ -2,6 +2,8 @@
 clear
 
 ###Scrip de pos-instalação do Arch Linux e seus derivados.
+###Autor: Mateus Ferreira ( github.com/HOkket )
+###ver: 0.2
 
 # Uso: options=("um" "dois" "três"); inputChoice "Escolha:" 1 "${options[@]}"; choice=$?; echo "${options[$choice]}"
 function inputChoice() {
