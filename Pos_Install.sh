@@ -178,7 +178,6 @@ function multiChoice {
     eval "$retval"='("${indices[@]}")'
 }
 
-
 # Uso: options=("um" "dois" "três"); inputChoice "Escolha:" 1 "${options[@]}"; choice=$?; echo "${options[$choice]}"
 echo 'Este e um scipt de pos instação para sistemas linux baseados em Ubuntu e Arch'
 options=("ARCH LINUX" "UBUNTU" "SAIR")
