@@ -195,10 +195,14 @@ SISTEMA=${options[$choice]}
 
 if [ "$SISTEMA" = "ARCH LINUX" ]; then
     echo "Observe que antes de iniciarmos esta instalação o repositório multilib deve ser habilitado no arquivo pacman.conf"
-    read -p "Deseja modificar automaticamente o arquivo pacman.conf agora?[s/n]" multilib
+    echo "Deseja modificar automaticamente o arquivo pacman.conf agora?"
+    options=("SIM" "NAO")
+    inputChoice "Selecione:" 0 "${options[@]}"
+    choice=$?
+    multilib=${options[$choice]}
 
     ###Estrutura de verificação para a abertura do pacman.conf
-    if [ "$multilib" = "s" ] || [ "$multilib" = "S" ]; then
+    if [ "$multilib" = "SIM" ]; then
         sudo sed -i.bkp 's/#\[multilib\]$/[multilib]\nInclude = \/etc\/pacman.d\/mirrorlist/' /etc/pacman.conf
     else
         echo "Sem o repositório multilib não é possível obter pacotes importantes para essa instalação."
@@ -209,16 +213,23 @@ if [ "$SISTEMA" = "ARCH LINUX" ]; then
     sudo pacman -Syu
 
     ###opçoes do usuario.
-    read -p "Deseja instalar drivers de video da NVIDIA?[s/n]" NVIDIA
-    read -p "Deseja instalar o YAYHelper para gerenciamento do repositorio AUR?[s/n]" YAY
-
-    if [ "$NVIDIA" = "s" ] || [ "$NVIDIA" = "S" ]; then
+    echo "Deseja instalar drivers de video da NVIDIA?"
+    options=("SIM" "NAO")
+    inputChoice "Selecione:" 0 "${options[@]}"
+    choice=$?
+    NVIDIA=${options[$choice]}
+    if [ "$NVIDIA" = "sim" ]; then
         NVIDIAPACKS="nvidia vulkan-icd-loader nvidia-utils vulkan-tools vulkan-validation-layers"
         sudo pacman -S "$NVIDIAPACKS"
         clear
     fi
 
-    if [ "$YAY" = "s" ] || [ "$YAY" = "S" ]; then
+    echo "Deseja instalar o YAYHelper para gerenciamento do repositorio AUR?"
+    options=("SIM" "NAO")
+    inputChoice "Selecione:" 0 "${options[@]}"
+    choice=$?
+    YAY=${options[$choice]}
+    if [ "$YAY" = "SIM" ]; then
         cd /home/"$USER"/Downloads || return
         sudo pacman -S git go
         git clone https://aur.archlinux.org/yay-git.git
@@ -228,8 +239,12 @@ if [ "$SISTEMA" = "ARCH LINUX" ]; then
         cd ..
         rm -rf yay-git
 
-        read -p "Deseja instalar a extenção PoPOS shell?[s/n] (funciona somente para GNOME)" POPSHELL
-        if [ "$POPSHELL" = "s" ] || [ "$POPSHELL" = "S" ]; then
+    echo "Deseja instalar a extenção PoPOS shell? - (funciona somente para GNOME)"
+    options=("SIM" "NAO")
+    inputChoice "Selecione:" 0 "${options[@]}"
+    choice=$?
+    POPSHELL=${options[$choice]}
+        if [ "$POPSHELL" = "SIM" ]; then
             yay -S gnome-shell-extension-pop-shell || echo "Falha!"
             clear
         fi
@@ -260,7 +275,7 @@ elif [ "$SISTEMA" = "UBUNTU" ]; then
         sudo "$MESAPPA"
         sudo apt update && sudo apt upgrade
         NVIDIADRIVER=$(ubuntu-drivers devices | grep recommended | awk '{print $3}')
-        sudo apt install "mesa-* vulkan-* "$NVIDIADRIVER" nvidia-settings" -y
+        sudo apt install "mesa-* vulkan-* ""$NVIDIADRIVER"" nvidia-settings" -y
         clear
     fi
 
