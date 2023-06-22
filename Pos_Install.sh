@@ -3,56 +3,62 @@ clear
 
 ###Scrip de pos-instalação do Arch Linux e seus derivados.
 
-###pacMan animação
-function pacMan () {
-    local string="${1}"
-    local interval="${2}"
-    : "${interval:=0.2}"
-    local pad="${3}"
-    : "${pad:=.}"
-    local length=${#string}
-    local padding=""
+# Usage: options=("one" "two" "three"); inputChoice "Choose:" 1 "${options[@]}"; choice=$?; echo "${options[$choice]}"
+function inputChoice() {
+    echo "${1}"; shift
+    echo "$(tput dim)""- Change option: [up/down], Select: [ENTER]" "$(tput sgr0)"
+    local selected="${1}"; shift
 
-    # Comment out next two lines if you are using CTRL+C event handler.
-    trap 'tput cnorm; echo' EXIT
-    trap 'exit 127' HUP INT TERM
+    ESC=$(echo -e "\033")
+    cursor_blink_on()  { tput cnorm; }
+    cursor_blink_off() { tput civis; }
+    cursor_to()        { tput cup $(($1-1)); }
+    print_option()     { echo "$(tput sgr0)" "$1" "$(tput sgr0)"; }
+    print_selected()   { echo "$(tput rev)" "$1" "$(tput sgr0)"; }
+    get_cursor_row()   { IFS=';' read -rsdR -p $'\E[6n' ROW COL; echo "${ROW#*[}"; }
+    key_input()        { read -rs -n3 key 2>/dev/null >&2; [[ $key = ${ESC}[A ]] && echo up; [[ $key = ${ESC}[B ]] && echo down; [[ $key = "" ]] && echo enter; }
 
-    tput civis # hide cursor
-    tput sc # save cursor position
+    for opt; do echo; done
 
-    for((i=0;i<=length;i++)); do
-        tput rc
-        echo "${padding}c${string:i:length}"
-        sleep "$interval"
-        tput rc
-        echo "${padding}C${string:i:length}"
-        sleep "${interval}"
-        padding+="${pad}"
+    local lastrow
+    lastrow=$(get_cursor_row)
+    local startrow=$((lastrow - $#))
+    trap "cursor_blink_on; echo; echo; exit" 2
+    cursor_blink_off
+
+    : selected:=0
+
+    while true; do
+        local idx=0
+        for opt; do
+            cursor_to $((startrow + idx))
+            if [ ${idx} -eq "${selected}" ]; then
+                print_selected "${opt}"
+            else
+                print_option "${opt}"
+            fi
+            ((idx++))
+        done
+
+        case $(key_input) in
+            enter) break;;
+            up)    ((selected--)); [ "${selected}" -lt 0 ] && selected=$(($# - 1));;
+            down)  ((selected++)); [ "${selected}" -ge $# ] && selected=0;;
+        esac
     done
 
-    tput cnorm
-    tput rc
-    echo "${padding}"
-}
-
-# Usage: pacMan e creditos
-pacMan "    Criado por Mateus Ferreira   " 0.1 "."
-
-# bannerSimple "Baner" "*"
-function bannerSimple() {
-    local msg="${2} ${1} ${2}"
-    local edge
-    edge=${msg//?/$2}
-    echo "${edge}"
-    echo "$(tput bold)${msg}$(tput sgr0)"
-    echo "${edge}"
+    cursor_to "${lastrow}"
+    cursor_blink_on
     echo
+
+    return "${selected}"
 }
-# Usage: bannerSimple "my title" "*"
-bannerSimple "Este e um scipt de pos instação para sistemas linux baseados em Ubuntu e Arch" "*"
-bannerSimple "{1} - ARCH LINUX" "*"
-bannerSimple "{2} - UBUNTU" "*"
-read -p "Digite o numero correspondente ao seu sistema base! " SISTEMA
+
+# Usage: options=("one" "two" "three"); inputChoice "Choose:" 1 "${options[@]}"; choice=$?; echo "${options[$choice]}"
+echo 'Este e um scipt de pos instação para sistemas linux baseados em Ubuntu e Arch'
+options=("ARCH LINUX" "UBUNTU" "SAIR")
+inputChoice "Choose:" 0 "${options[@]}"; choice=$?
+SISTEMA=${options[$choice]}
 
 if [ "$SISTEMA" = "1" ]; then
     echo "Observe que antes de iniciarmos esta instalação o repositório multilib deve ser habilitado no arquivo pacman.conf"
