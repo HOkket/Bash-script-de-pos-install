@@ -254,9 +254,9 @@ elif [ "$SISTEMA" = "UBUNTU" ]; then
     NVIDIA=${options[$choice]}
 
     if [ "$NVIDIA" = "SIM" ]; then
+# Dois PPAs serão adicionados ao sistema o da NVIDA e do MESA.
         NVIDIAPPA="add-apt-repository ppa:graphics-drivers/ppa"
         MESAPPA="add-apt-repository ppa:kisak/kisak-mesa"
-        echo "Dois PPAs serão adicionados ao sistema o da NVIDA e do MESA. "
         sudo "$NVIDIAPPA"
         sudo "$MESAPPA"
         sudo apt update && sudo apt upgrade
