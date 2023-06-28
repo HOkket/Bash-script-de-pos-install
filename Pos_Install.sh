@@ -232,9 +232,9 @@ if [ "$SISTEMA" = "ARCH LINUX" ]; then
             clear
         fi
 
-    ### Instalação de pacotes referentes a games no linux.
+    # Instalação de pacotes referentes a games no linux.
     # Exibe as opções para seleção
-    multiChoice "Selecione as opções:" result " Discord; Steam; Wine; Neofetch: Lustris" "0; 0; 0; 0"   
+    multiChoice "Selecione as opções:" result " Discord; Steam; Wine; Neofetch; Lustris" "0; 0; 0; 0"   
     # Supondo que "result" seja o array com os índices selecionados
     selected_words=()
     for index in "${result[@]}"; do
@@ -294,10 +294,22 @@ elif [ "$SISTEMA" = "UBUNTU" ]; then
     fi
 
     ### Instalação de pacotes referentes a games no linux.
-    GAMEPACK="steam gamemode discord lutris neofetch"
-    sudo apt install "$GAMEPACK" -y
-    clear
-    neofetch
+        # Exibe as opções para seleção
+    multiChoice "Selecione as opções:" result " Discord; Steam; Wine; Neofetch; Lustris; Gamemode" "0; 0; 0; 0; 0"   
+    # Supondo que "result" seja o array com os índices selecionados
+    selected_words=()
+    for index in "${result[@]}"; do
+        case $index in
+            0) selected_words+=("discord");;
+            1) selected_words+=("steam");;
+            2) selected_words+=("wine");;
+            3) selected_words+=("neofetch");;
+            4) selected_words+=("lutris");;
+            5) selected_words+=("gamemmode")
+            # Adicione mais casos conforme necessário para cada opção
+        esac
+    done
+    sudo apt install "$selected_words" -y
 elif [ "$SISTEMA" = "SAIR" ]; then
     exit
 fi
