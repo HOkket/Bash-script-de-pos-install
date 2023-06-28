@@ -71,6 +71,103 @@ function inputChoice() {
 
     return "${selected}"
 }
+# Função para escolha múltipla no terminal
+function multiChoice {
+    # Exibe a mensagem inicial
+    echo "${1}"; shift
+    echo "$(tput dim)""- Alterar Opção: [cima/baixo], Alterar Seleção: [espaço], Concluir: [ENTER]" "$(tput sgr0)"
+     # Funções auxiliares para controle de impressão no terminal e entrada de teclado
+    ESC=$( printf "\033")
+    cursor_blink_on()   { printf "%s" "${ESC}[?25h"; } # Ativar piscar do cursor
+    cursor_blink_off()  { printf "%s" "${ESC}[?25l"; } # Desativar piscar do cursor
+    cursor_to()         { printf "%s" "${ESC}[$1;${2:-1}H"; } # Mover o cursor para posição específica
+    print_inactive()    { printf "%s   %s " "$2" "$1"; } # Imprimir opção inativa
+    print_active()      { printf "%s  ${ESC}[7m $1 ${ESC}[27m" "$2"; } # Imprimir opção ativa
+    get_cursor_row()    { IFS=';' read -rsdR -p $'\E[6n' ROW COL; echo "${ROW#*[}"; } # Pegar a linha atual do cursor
+    key_input()         { # Processar a entrada do teclado
+        local key
+        IFS= read -rsn1 key 2>/dev/null >&2
+        if [[ $key = ""      ]]; then echo enter; fi;
+        if [[ $key = $'\x20' ]]; then echo space; fi;
+        if [[ $key = $'\x1b' ]]; then
+            read -rsn2 key
+            if [[ $key = [A ]]; then echo up;    fi;
+            if [[ $key = [B ]]; then echo down;  fi;
+        fi
+    }
+    toggle_option()    { # Alternar a opção selecionada
+        local arr_name=$1
+        eval "local arr=(\"\${${arr_name}[@]}\")"
+        local option=$2
+        if [[ ${arr[option]} == 1 ]]; then
+            arr[option]=0
+        else
+            arr[option]=1
+        fi
+        eval "$arr_name"='("${arr[@]}")'
+    }
+     # Inicialização de variáveis
+    local retval=$1
+    local options
+    local defaults
+     IFS=';' read -r -a options <<< "$2"
+    if [[ -z $3 ]]; then
+        defaults=()
+    else
+        IFS=';' read -r -a defaults <<< "$3"
+    fi
+     local selected=()
+     for ((i=0; i<${#options[@]}; i++)); do
+        selected+=("${defaults[i]}")
+        printf "\n"
+    done
+     # Determinar a posição atual da tela para sobrescrever as opções
+    local lastrow
+    lastrow=$(get_cursor_row)
+    local startrow=$((lastrow - ${#options[@]}))
+     # Garantir que o cursor e a entrada sejam exibidos novamente após um ctrl+c durante a leitura -s
+    trap "cursor_blink_on; stty echo; printf '\n'; exit" 2
+    cursor_blink_off
+     local active=0
+    while true; do
+        # Imprimir opções sobrescrevendo as últimas linhas
+        local idx=0
+        for option in "${options[@]}"; do
+            local prefix="[ ]"
+            if [[ ${selected[idx]} == 1 ]]; then
+                prefix="[x]"
+            fi
+             cursor_to $((startrow + idx))
+            if [ $idx -eq $active ]; then
+                print_active "$option" "$prefix"
+            else
+                print_inactive "$option" "$prefix"
+            fi
+            ((idx++))
+        done
+         # Controle de teclado do usuário
+        case $(key_input) in
+            space)  toggle_option selected $active;;
+            enter)  break;;
+            up)     ((active--));
+                if [ $active -lt 0 ]; then active=$((${#options[@]} - 1)); fi;;
+            down)   ((active++));
+                if [ "$active" -ge ${#options[@]} ]; then active=0; fi;;
+        esac
+    done
+     # Posição do cursor de volta ao normal
+    cursor_to "$lastrow"
+    printf "\n"
+    cursor_blink_on
+     indices=()
+    for((i=0;i<${#selected[@]};i++)); do
+        if ((selected[i] == 1)); then
+            indices+=("${i}")
+        fi
+    done
+     # Retornar os índices das opções selecionadas
+    eval "$retval"='("${indices[@]}")'
+}
 
 # Uso: options=("um" "dois" "três"); inputChoice "Escolha:" 1 "${options[@]}"; choice=$?; echo "${options[$choice]}"
 echo 'Este e um scipt de pos instação para sistemas linux baseados em Ubuntu e Arch'
@@ -124,7 +221,7 @@ if [ "$SISTEMA" = "ARCH LINUX" ]; then
         clear
         cd ..
         rm -rf yay-git
-
+    fi
     echo "Deseja instalar a extenção PoPOS shell? - (funciona somente para GNOME)"
     options=("SIM" "NAO")
     inputChoice "Selecione:" 0 "${options[@]}"
@@ -135,13 +232,22 @@ if [ "$SISTEMA" = "ARCH LINUX" ]; then
             clear
         fi
 
-        ### Instalação de pacotes referentes a games no linux.
-        PACMAN="steam wine gamemode discord neofetch"
-        YAYAPPS="lutris gnome-shell-extension-gamemode-git"
-        sudo pacman -S "$PACMAN" && yay -S "$YAYAPPS"
-        clear
-        neofetch
-    fi
+    ### Instalação de pacotes referentes a games no linux.
+    # Exibe as opções para seleção
+    multiChoice "Selecione as opções:" result " Discord; Steam; Wine; Neofetch: Lustris" "0; 0; 0; 0"   
+    # Supondo que "result" seja o array com os índices selecionados
+    selected_words=()
+    for index in "${result[@]}"; do
+        case $index in
+            0) selected_words+=("discord");;
+            1) selected_words+=("steam");;
+            2) selected_words+=("wine");;
+            3) selected_words+=("neofetch");;
+            4) selected_words+=("lutris");;
+            # Adicione mais casos conforme necessário para cada opção
+        esac
+    done
+    sudo pacman -S "$selected_words"
 
 elif [ "$SISTEMA" = "UBUNTU" ]; then
     sudo apt update && sudo apt upgrade -y
