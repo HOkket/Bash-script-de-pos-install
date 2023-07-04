@@ -247,7 +247,7 @@ if [ "$SISTEMA" = "ARCH LINUX" ]; then
             # Adicione mais casos conforme necessário para cada opção
         esac
     done
-    sudo pacman -S "$selected_words"
+    sudo pacman -S "${selected_words[@]}"
 
 elif [ "$SISTEMA" = "UBUNTU" ]; then
     sudo apt update && sudo apt upgrade -y
@@ -295,7 +295,7 @@ elif [ "$SISTEMA" = "UBUNTU" ]; then
 
     ### Instalação de pacotes referentes a games no linux.
         # Exibe as opções para seleção
-    multiChoice "Selecione as opções:" result " Discord; Steam; Wine; Neofetch; Lustris; Gamemode" "0; 0; 0; 0; 0"   
+    multiChoice "Selecione as opções:" result "Discord;Steam;Wine;Neofetch;Lustris;Gamemode" "0;0;0;0;0"   
     # Supondo que "result" seja o array com os índices selecionados
     selected_words=()
     for index in "${result[@]}"; do
@@ -309,7 +309,7 @@ elif [ "$SISTEMA" = "UBUNTU" ]; then
             # Adicione mais casos conforme necessário para cada opção
         esac
     done
-    sudo apt install "$selected_words" -y
+    sudo apt install "${selected_words[@]}" -y
 elif [ "$SISTEMA" = "SAIR" ]; then
     exit
 fi
