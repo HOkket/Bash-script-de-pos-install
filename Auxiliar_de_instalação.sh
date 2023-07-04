@@ -1,9 +1,9 @@
 #!/bin/bash
 clear
 
-###Scrip de pos-instalação do Arch Linux/Ubuntu e seus derivados.
+###Scrip de para auxiliar no pos-instalação do Arch Linux/Ubuntu e seus derivados.
 ###Autor: Mateus Ferreira ( github.com/HOkket )
-###ver: 0.5
+###ver: 0.6
 
 # Uso: options=("um" "dois" "três"); inputChoice "Escolha:" 1 "${options[@]}"; choice=$?; echo "${options[$choice]}"
 function inputChoice() {
