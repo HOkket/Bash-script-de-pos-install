@@ -1,22 +1,27 @@
-Script de Pós-Instalação para Ubuntu e Arch Linux e Derivados 
+# Script de Pós-Instalação para Ubuntu, Arch Linux e Derivados
 
-Este é um script de pós-instalação para sistemas Linux baseados em Ubuntu e Arch. Ele automatiza algumas tarefas comuns após a instalação do sistema operacional, como a configuração de repositórios, instalação de drivers de vídeo e pacotes adicionais.
-Uso
+Este script foi desenvolvido para automatizar tarefas essenciais após a instalação de sistemas Linux baseados em Ubuntu e Arch Linux. Ele simplifica a configuração inicial do sistema, permitindo que você economize tempo ao realizar ajustes e instalações comuns.
 
-    Certifique-se de ter os privilégios de superusuário (sudo) para executar os comandos necessários. 
-    Execute o script usando o comando  bash ./Pos_install.sh no terminal.
-    Siga as instruções apresentadas pelo script. 
-    Aguarde enquanto o script realiza as configurações e instalações necessárias. 
+## Funcionalidades
 
-O script apresentará opções para você escolher, como instalar drivers de vídeo, configurar repositórios e instalar pacotes adicionais. Selecione as opções desejadas digitando "s" ou "n" quando solicitado. 
-Observações 
+- **Configuração de Repositórios**: Ajusta automaticamente os repositórios do sistema, incluindo o repositório multilib no Arch Linux.
+- **Instalação de Drivers de Vídeo**: Oferece suporte para instalação de drivers NVIDIA e outros drivers necessários.
+- **Gerenciamento de Pacotes AUR**: Instala o YAY, um gerenciador de pacotes para o repositório AUR (somente para Arch Linux).
+- **Extensão Pop Shell**: Configura a extensão Pop Shell para GNOME em sistemas baseados no Arch Linux.
+- **Pacotes para Jogos**: Instala ferramentas e aplicativos voltados para jogos, como Steam, Wine, Lutris, Discord, entre outros.
 
-    Arquivo pacman.conf : O script verificará se o repositório multilib está habilitado no arquivo  /etc/pacman.conf (apenas para o Arch Linux). Caso não esteja, você terá a opção de modificá-lo automaticamente durante a execução do script. 
-    Drivers de vídeo NVIDIA : Se você selecionar a opção de instalar drivers de vídeo da NVIDIA, o script executará os comandos necessários para instalar os pacotes relevantes. 
-    YAY e AUR : Se você escolher a opção de instalar o YAYHelper (apenas para o Arch Linux), o script executará os comandos necessários para instalar o YAY, que é um utilitário para gerenciar pacotes do repositório AUR.
-    Extensão Pop Shell : Se você selecionar a opção de instalar a extensão Pop Shell (apenas para o Arch Linux e GNOME), o script executará os comandos necessários para instalar a extensão PoPOS Shell.
-    Pacotes de jogos : O script instalará pacotes relacionados a jogos, como Steam, Wine, Gamemode, Discord, Lutris, entre outros. Esses pacotes podem variar dependendo do sistema operacional base. 
+## Como Usar
 
-Lembre-se de revisar o código do script antes de executá-lo e ajustá-lo conforme necessário para atender às suas necessidades e especificações do sistema.
+1. Certifique-se de ter privilégios de superusuário (sudo).
+2. Execute o script com o comando: `bash ./Pos_install.sh`.
+3. Siga as instruções interativas apresentadas no terminal.
+4. Escolha as opções desejadas para personalizar a configuração do sistema.
 
-Importante : Execute este script por sua própria conta e risco. Sempre faça um backup dos seus dados importantes antes de executar qualquer script de pós-instalação ou de modificação do sistema operacional. 
+## Observações Importantes
+
+- **Repositório Multilib**: O script verifica e habilita automaticamente o repositório multilib no Arch Linux, caso necessário.
+- **Drivers NVIDIA**: A instalação de drivers NVIDIA é realizada de forma automatizada, caso selecionada.
+- **Personalização**: Revise o código do script antes de executá-lo para garantir que ele atenda às suas necessidades específicas.
+- **Riscos**: Faça backup de seus dados importantes antes de executar o script. Use-o por sua conta e risco.
+
+Este script é uma ferramenta prática para configurar rapidamente seu sistema Linux após a instalação, oferecendo flexibilidade e eficiência para usuários iniciantes e avançados.
