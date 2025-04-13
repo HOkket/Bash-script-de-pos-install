@@ -305,7 +305,7 @@ elif [ "$SISTEMA" = "UBUNTU" ]; then
             2) selected_words+=("wine");;
             3) selected_words+=("neofetch");;
             4) selected_words+=("lutris");;
-            5) selected_words+=("gamemmode")
+            5) selected_words+=("gamemode")
             # Adicione mais casos conforme necessário para cada opção
         esac
     done
