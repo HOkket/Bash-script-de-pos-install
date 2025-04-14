@@ -308,9 +308,9 @@ elif [ "$SISTEMA" = "UBUNTU" ]; then
         clear
     fi
 
-    ### Instalação de pacotes referentes a games no linux.
-        # Exibe as opções para seleção
-    multiChoice "Selecione as opções:" result "Discord;Steam;Wine;Neofetch;Lustris;Gamemode" "0;0;0;0;0"   
+    ### Instalação de pacotes referentes a games e uso geral no linux.
+    # Exibe as opções para seleção
+    multiChoice "Selecione as opções:" result "Discord;Steam;Wine;Neofetch;Lutris;Gamemode;OBS Studio;VLC;GIMP;Blender;LibreOffice;Firefox;Chromium;VSCode;Git;Node.js;Python;Java;Docker;VirtualBox" "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0"   
     # Supondo que "result" seja o array com os índices selecionados
     selected_words=()
     for index in "${result[@]}"; do
@@ -320,7 +320,21 @@ elif [ "$SISTEMA" = "UBUNTU" ]; then
             2) selected_words+=("wine");;
             3) selected_words+=("neofetch");;
             4) selected_words+=("lutris");;
-            5) selected_words+=("gamemode")
+            5) selected_words+=("gamemode");;
+            6) selected_words+=("obs-studio");;
+            7) selected_words+=("vlc");;
+            8) selected_words+=("gimp");;
+            9) selected_words+=("blender");;
+            10) selected_words+=("libreoffice");;
+            11) selected_words+=("firefox");;
+            12) selected_words+=("chromium");;
+            13) selected_words+=("code");;
+            14) selected_words+=("git");;
+            15) selected_words+=("nodejs");;
+            16) selected_words+=("python3");;
+            17) selected_words+=("default-jdk");;
+            18) selected_words+=("docker.io");;
+            19) selected_words+=("virtualbox");;
             # Adicione mais casos conforme necessário para cada opção
         esac
     done
