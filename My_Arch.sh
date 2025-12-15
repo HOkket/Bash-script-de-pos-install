@@ -208,8 +208,8 @@ fi
 
 multiChoice "Selecione as opções:" result " Vesktop; Steam; Wine; Charles; Lustris; Gamemode; OBS Studio; VLC; GIMP; freedownloadmanager; \ 
     LibreOffice; Firefox; Chromium; Teamspeak; Git; Node.js; Python; Java; \
-    Docker; VirtualBox; Heroic-Games; Krita; VsCode; Zapzap; Brave; ProtonPlus" \
-    "0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0"
+    Docker; VirtualBox; Heroic-Games; Krita; VsCode; Zapzap; Brave; ProtonPlus; JLess" \
+    "0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0"
 # Supondo que "result" seja o array com os índices selecionados
 selected_words=()
 for index in "${result[@]}"; do
@@ -240,6 +240,7 @@ for index in "${result[@]}"; do
         23) selected_words+=("zapzap");;
         24) selected_words+=("brave");;
         25) selected_words+=("protonplus");;
+        26) selected_words+=("jless");;
         # Adicione mais casos conforme necessário para cada opção
     esac
 done
