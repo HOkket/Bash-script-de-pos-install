@@ -1,12 +1,100 @@
 #!/bin/bash
 
+# Este é um script fresco projetado para fazer boa parte da minha configuração pós-instalação do arch linux ou suas derivaçoes
+
+## Variáveis ---------------------------------
+PKG_PACMAN=$(command -v pacman)
+PKG_YAY=$(command -v yay)
+USR_SHELL=$(command -v gnome-shell)
 
 
-## Funçoes de menus ------------------------------------------------------------------------------------------------------------
+
+# Definição dos pacotes (Nome Amigável="Nome do Pacote")
+# Isso centraliza a manutenção do script em um só lugar.
+declare -A MAPA_PACOTES=(
+    ["Vesktop"]="vesktop"
+    ["Steam"]="steam"
+    ["Wine"]="wine"
+    ["Charles"]="charles-bundled-java"
+    ["Lutris"]="lutris-wine-meta"
+    ["Gamemode"]="gamemode"
+    ["OBS Studio"]="obs-studio"
+    ["VLC"]="vlc"
+    ["GIMP"]="gimp"
+    ["Free Download Manager"]="freedownloadmanager"
+    ["LibreOffice"]="libreoffice-fresh"
+    ["Firefox"]="firefox"
+    ["Chromium"]="chromium"
+    ["Teamspeak"]="teamspeak3"
+    ["Git"]="git"
+    ["Node.js"]="nodejs"
+    ["Python"]="python"
+    ["Java"]="jdk-openjdk"
+    ["Docker"]="docker"
+    ["VirtualBox"]="virtualbox"
+    ["Heroic Games"]="heroic-games-launcher-bin"
+    ["Krita"]="krita krita-plugin-gmic"
+    ["VsCode"]="visual-studio-code-bin"
+    ["Zapzap"]="zapzap"
+    ["Brave"]="brave-bin"
+    ["ProtonPlus"]="protonplus"
+    ["JLess"]="jless"
+)
+
+# Extensões do GNOME
+declare -A MAPA_EXTENSOES=(
+    ["Dash-to-dock"]="gnome-shell-extension-dash-to-dock"
+    ["Gnome-4x"]="gnome-shell-extension-gnome-ui-tune-git"
+    ["Pop-Shell"]="gnome-shell-extension-pop-shell-git"
+    ["Appindicator"]="gnome-shell-extension-appindicator"
+    ["Arc-Menu"]="gnome-shell-extension-arc-menu"
+    ["Caffeine"]="gnome-shell-extension-caffeine"
+    ["Dash-to-Panel"]="gnome-shell-extension-dash-to-panel"
+    ["Desktop-icons"]="gnome-shell-extension-desktop-icons-ng"
+    ["User-themes"]="gnome-shell-extension-user-theme-x-git"
+)
+
+# declaraçoes de funçoes! -------------------------------------
+# Usage: bannerColor "my title" "red" "*"
+function bannerColor() {
+    case ${2} in
+        black) color=0
+        ;;
+        red) color=1
+        ;;
+        green) color=2
+        ;;
+        yellow) color=3
+        ;;
+        blue) color=4
+        ;;
+        magenta) color=5
+        ;;
+        cyan) color=6
+        ;;
+        white) color=7
+        ;;
+        *) echo "color is not set"; exit 1
+        ;;
+    esac
+
+    local msg="${3} ${1} ${3}"
+    local edge
+    edge=${msg//?/$3}
+    tput setaf ${color}
+    tput bold
+    echo "${edge}"
+    echo "${msg}"
+    echo "${edge}"
+    tput sgr 0
+    echo
+}
+
+## Funçoes de menus de escolha unica
 # Uso: options=("um" "dois" "três"); inputChoice "Escolha:" 1 "${options[@]}"; choice=$?; echo "${options[$choice]}"
 function inputChoice() {
     echo "${1}"; shift
-    echo "$(tput dim)""- Mude de opção : [up/down], Selecione com: [ENTER]" "$(tput sgr0)"
+    echo "$(tput dim)""- Mude de opção : [↑/↓], Selecione com: [ENTER]" "$(tput sgr0)"
     local selected="${1}"; shift
 
     ESC=$(echo -e "\033")
@@ -54,11 +142,12 @@ function inputChoice() {
     return "${selected}"
 }
 
+#função de menu de escilha multipla
 # Usage: multiChoice "header message" resultArray "comma separated options" "comma separated default values"
 # Credit: https://serverfault.com/a/949806
 function multiChoice {
     echo "${1}"; shift
-    echo "$(tput dim)""- Change Option: [up/down], Change Selection: [space], Done: [ENTER]" "$(tput sgr0)"
+    echo "$(tput dim)""- Change Option: [↑/↓], Change Selection: [space], Done: [ENTER]" "$(tput sgr0)"
     # little helpers for terminal print control and key input
     ESC=$( printf "\033")
     cursor_blink_on()   { printf "%s" "${ESC}[?25h"; }
@@ -162,19 +251,34 @@ function multiChoice {
     # eval $retval='("${selected[@]}")'
     eval "$retval"='("${indices[@]}")'
 }
+
+#Verificando a existencia de gerenciador YAY no sistema
+#Caso o YAY não estaj instalado se pedido para instalar 
+verificador_yay() {
+    if [[ -z "$PKG_YAY" ]]; then
+        echo "Gerenciador de pacotes AUR não encontrado!"
+        echo "Sem um gerenciador não sera possivel instalar os aplivativos desse script."
+
+        # Uso: options=("um" "dois" "três"); inputChoice "Escolha:" 1 "${options[@]}"; choice=$?; echo "${options[$choice]}"
+        options=("Sim" "Não")
+        inputChoice "Deseja instalar o gerenciador yay para pacotes AUR? :" 0 "${options[@]}"; choice=$?
+
+        #Verifica a opção selecionado e itera sobre ela.
+        if [ "${options[$choice]}" = "Sim" ] ; then
+            sudo pacman -Syu
+            sudo pacman -S git base-devel
+            git clone https://aur.archlinux.org/yay.git
+            cd yay || return
+            makepkg -si
+            cd .. || return
+            rm -rf yay-git
+        else
+            echo "YAY não sera instalado..."
+        fi
+    fi
+}
+
 ##-----------------------------------------------------------------------------------------------------------------------------
-
-##Variaveis---------------------------------
-## Capturando informaçoes sobre os gerenciados de pacotes 
-## PACMAN
-PKG_PACMAN=$(command -v pacman)
-## YAY
-PKG_YAY=$(command -v yay)
-##Capturando informação do GNOME-SHELL
-USR_SHELL=$(command -v gnome-shell)
-##-------------------------------------------
-
-
 
 # Verificando se o gerenciador de pacotes é o pacman
 if [[ -z "$PKG_PACMAN" ]]; then
@@ -183,96 +287,76 @@ if [[ -z "$PKG_PACMAN" ]]; then
     exit 1
 fi
 
-#Verificando a existencia de gerenciador YAY nop istema 
-if [[ -z "$PKG_YAY" ]]; then
-    echo "Gerenciador de pacotes AUR não encontrado!"
-    echo "Sem um gerenciador não sera possivel instalar os aplivativos desse script."
+#--------------------------------------------------------- Começa o script ----------------------------------------------------
 
-    # Uso: options=("um" "dois" "três"); inputChoice "Escolha:" 1 "${options[@]}"; choice=$?; echo "${options[$choice]}"
-    options=("Sim" "Não")
-    inputChoice "Deseja instalar o gerenciador yay para pacotes AUR? :" 0 "${options[@]}"; choice=$?
+# Usage: bannerColor "my title" "red" "*"
+bannerColor "HOKKET Istall" "blue" "#"
 
-    #Verifica a opção selecionado e itera sobre ela.
-    if [ "${options[$choice]}" = "Sim" ] ; then
-        sudo pacman -Syu
-        sudo pacman -S git base-devel
-        git clone https://aur.archlinux.org/yay.git
-        cd yay || return
-        makepkg -si
-        cd .. || return
-        rm -rf yay-git
-    else
-        echo "YAY não sera instalado..."
-    fi
-fi
 
-multiChoice "Selecione as opções:" result " Vesktop; Steam; Wine; Charles; Lustris; Gamemode; OBS Studio; VLC; GIMP; freedownloadmanager; \ 
-    LibreOffice; Firefox; Chromium; Teamspeak; Git; Node.js; Python; Java; \
-    Docker; VirtualBox; Heroic-Games; Krita; VsCode; Zapzap; Brave; ProtonPlus; JLess" \
-    "0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0"
-# Supondo que "result" seja o array com os índices selecionados
-selected_words=()
-for index in "${result[@]}"; do
-    case $index in
-        0) selected_words+=("vesktop");;
-        1) selected_words+=("steam");;
-        2) selected_words+=("wine");;
-        3) selected_words+=("charles-bundled-java");;
-        4) selected_words+=("lutris-wine-meta");;
-        5) selected_words+=("gamemode");;
-        6) selected_words+=("obs-studio");;
-        7) selected_words+=("vlc");;
-        8) selected_words+=("gimp");;
-        9) selected_words+=("freedownloadmanager");;
-        10) selected_words+=("libreoffice-fresh");;
-        11) selected_words+=("firefox");;
-        12) selected_words+=("chromium");;
-        13) selected_words+=("teamspeak3");;
-        14) selected_words+=("git");;
-        15) selected_words+=("nodejs");;
-        16) selected_words+=("python");;
-        17) selected_words+=("jdk-openjdk");;
-        18) selected_words+=("docker");;
-        19) selected_words+=("virtualbox");;
-        20) selected_words+=("heroic-games-launcher-bin");;
-        21) selected_words+=("krita krita-plugin-gmic");;
-        22) selected_words+=("visual-studio-code-bin");;
-        23) selected_words+=("zapzap");;
-        24) selected_words+=("brave");;
-        25) selected_words+=("protonplus");;
-        26) selected_words+=("jless");;
-        # Adicione mais casos conforme necessário para cada opção
-    esac
-done
-yay -S "${selected_words[@]}" --asdeps --noconfirm --cleanafter
+options=("Manual" "Automatico" "Sair")
+inputChoice "Escolha o modo de instalação!" 0 "${options[@]}"; choice=$?
+
+# Verifica o modo de intalação escolhido opção escoliha 
+if [ "${options[$choice]}" = "Manual" ]; then
+    
+    # Extrai chaves e gera strings para o menu dinamicamente
+    # shellcheck disable=SC2207
+    NOMES_ORDENADOS=($(echo "${!MAPA_PACOTES[@]}" | tr ' ' '\n' | sort | tr '\n' ' '))
+    OPCOES_STR=$(IFS=';'; echo "${NOMES_ORDENADOS[*]}")
+    DEFAULTS_STR=$(printf "0;%.0s" $(seq 1 ${#NOMES_ORDENADOS[@]}) | sed 's/;$//')
 
 
 
-if [[ $USR_SHELL ]]; then
-    # Usage: options=("one" "two" "three"); inputChoice "Choose:" 1 "${options[@]}"; choice=$?; echo "${options[$choice]}"
-    options=("Sim" "Não")
-    inputChoice "Instalar extensões do gnome?:" 0 "${options[@]}"; choice=$?
-    if [ "${options[$choice]}" = "Sim" ]; then
-        multiChoice "Selecione as opções:" result " Dash-to-dock; Gnome-4x; Pop-Shell; Appindicator; Arc-Menu; Caffeine; Dash-toPanel; \
-            Desktop-icons; User-themes" \
-            "0; 0; 0; 0; 0; 0; 0; 0; 0"   
-        # Supondo que "result" seja o array com os índices selecionados
-        selected_words=()
-            for index in "${result[@]}"; do
-                case $index in
-                0) selected_words+=("gnome-shell-extension-dash-to-dock");;
-                1) selected_words+=("gnome-shell-extension-gnome-ui-tune-git");;
-                2) selected_words+=("gnome-shell-extension-pop-shell-git");;
-                3) selected_words+=("gnome-shell-extension-appindicator ");;
-                4) selected_words+=("gnome-shell-extension-arc-menu");;
-                5) selected_words+=("gnome-shell-extension-caffeine");;
-                6) selected_words+=("gnome-shell-extension-dash-to-panel");;
-                7) selected_words+=("gnome-shell-extension-desktop-icons-ng");;
-                8) selected_words+=("gnome-shell-extension-user-theme-x-git");;
-                
-                # Adicione mais casos conforme necessário para cada opção
-                esac
+    #chama a função de verificação e instalaçã do yay helper
+    verificador_yay
+
+    # Inicia o menu de escolhas de pacotes
+    # Se a opção for manual 
+    multiChoice "Selecione os pacotes:" result "$OPCOES_STR" "$DEFAULTS_STR"
+    # Supondo que "result" seja o array com os índices selecionados
+    pacotes_para_instalar=()
+    # shellcheck disable=SC2154
+    for idx in "${result[@]}"; do
+        nome_amigavel="${NOMES_ORDENADOS[$idx]}"
+        # shellcheck disable=SC2206
+        pacotes_para_instalar+=(${MAPA_PACOTES[$nome_amigavel]})
+    done
+
+    [[ ${#pacotes_para_instalar[@]} -gt 0 ]] && yay -S "${pacotes_para_instalar[@]}" --noconfirm --cleanafter
+
+
+    # Seção GNOME
+    if [[ $USR_SHELL ]]; then
+        inputChoice "Instalar extensões do GNOME?" 1 "Sim" "Não"; choice=$?
+        if [ $choice -eq 0 ]; then
+            # shellcheck disable=SC2207
+            EXT_NOMES=($(echo "${!MAPA_EXTENSOES[@]}" | tr ' ' '\n' | sort | tr '\n' ' '))
+            multiChoice "Extensões:" ext_result "$(IFS=';'; echo "${EXT_NOMES[*]}")" "0;0;0;0;0;0;0;0;0"
+            
+            ext_para_instalar=()
+            # shellcheck disable=SC2154
+            for idx in "${ext_result[@]}"; do
+                ext_para_instalar+=("${MAPA_EXTENSOES[${EXT_NOMES[$idx]}]}")
             done
-        yay -S gnome-shell-extension-tool "${selected_words[@]}" --asdeps --noconfirm --cleanafter
+            [[ ${#ext_para_instalar[@]} -gt 0 ]] && yay -S gnome-shell-extension-tool "${ext_para_instalar[@]}" --noconfirm
+        fi
     fi
+
+#Se a opção automatica for selecionada entra aqui
+elif [ "${options[$mode]}" = "Automático" ]; then
+    verificador_yay
+    # Instala todos os valores do mapa de pacotes
+    yay -S "${MAPA_PACOTES[@]}" --noconfirm --cleanafter
+
+    if [[ $USR_SHELL ]]; then
+        yay -S "${MAPA_EXTENSOES[@]}" --noconfirm --cleanafter
+    fi
+
+#Se sair for selecionado entra aqui
+else
+    echo "Encerranco script..."
+    exit 1
 fi
+
+#Fim do script
+echo "Processo concluído!"
