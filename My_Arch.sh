@@ -6,10 +6,7 @@
 PKG_PACMAN=$(command -v pacman)
 PKG_YAY=$(command -v yay)
 USR_SHELL=$(command -v gnome-shell)
-<<<<<<< HEAD
 USR_HYPERLAND=$(command -v hyprland)
-=======
->>>>>>> 0b97c3c (Remoção do suporte a ubuntu.)
 
 
 
@@ -346,7 +343,6 @@ if [ "${options[$choice]}" = "Manual" ]; then
         fi
     fi
 
-<<<<<<< HEAD
     # Seção do Hyperland + Caelestia Shell
     if [[ $USR_HYPERLAND ]]; then
         # Usage: options=("one" "two" "three"); inputChoice "Choose:" 1 "${options[@]}"; choice=$?; echo "${options[$choice]}"
@@ -357,8 +353,6 @@ if [ "${options[$choice]}" = "Manual" ]; then
         fi
     fi
 
-=======
->>>>>>> 0b97c3c (Remoção do suporte a ubuntu.)
 #Se a opção automatica for selecionada entra aqui
 elif [ "${options[$mode]}" = "Automático" ]; then
     verificador_yay
@@ -367,12 +361,9 @@ elif [ "${options[$mode]}" = "Automático" ]; then
 
     if [[ $USR_SHELL ]]; then
         yay -S "${MAPA_EXTENSOES[@]}" --noconfirm --cleanafter
-<<<<<<< HEAD
     
     elif [[ $USR_HYPERLAND ]]; then
         yay -S caelestia-shell-git 
-=======
->>>>>>> 0b97c3c (Remoção do suporte a ubuntu.)
     fi
 
 #Se sair for selecionado entra aqui
