@@ -291,7 +291,7 @@ fi
 #--------------------------------------------------------- Começa o script ----------------------------------------------------
 
 # Usage: bannerColor "my title" "red" "*"
-bannerColor "HOKKET Istall" "blue" "#"
+bannerColor "Architekt  By MateusF." "blue" "#"
 
 
 options=("Manual" "Automatico" "Sair")
