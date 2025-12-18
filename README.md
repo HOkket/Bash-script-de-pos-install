@@ -1,4 +1,4 @@
-# HOKKET Install - Script de Pós-Instalação para Arch Linux
+# Architekt - Script de Pós-Instalação para Arch Linux
 
 Este script foi projetado para automatizar e simplificar a configuração do ambiente de trabalho e lazer após uma nova instalação do Arch Linux ou de suas distribuições derivadas.
 
@@ -38,8 +38,8 @@ A lista completa está no script. Abaixo estão alguns dos principais:
 
 1. **Clone o repositório ou baixe o script:**
    ```bash
-   git clone <URL_DO_REPOSITORIO>
-   cd <NOME_DO_DIRETORIO>
+   git clone https://github.com/HOkket/Architekt
+   cd Architekt
    ```
 2. **Dê permissão de execução ao script:**
    ```bash
